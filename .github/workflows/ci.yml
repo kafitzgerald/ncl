@@ -1,4 +1,4 @@
-name: CI (mamba)
+name: CI
 on:
   push:
     branches:
@@ -8,6 +8,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -23,12 +27,8 @@ jobs:
         os: [ "ubuntu-latest", "macos-latest"]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install tcsh and byacc (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -45,25 +45,17 @@ jobs:
 
       - name: Create mamba environment (Darwin)
         if: matrix.os == 'macos-latest'
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
         with:
-          micromamba-version: "latest"
-          environment-name: ncl_build
           environment-file: .build/envs/Darwin.yml
 
       - name: Create mamba environment (Linux)
         if: matrix.os == 'ubuntu-latest'
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
         with:
-          micromamba-version: "latest"
-          environment-name: ncl_build
           environment-file: .build/envs/Linux.yml
 
-      - name: Build ncl
+      - name: Build NCL
         run: |
           bash .build/mamba_build.sh
 
