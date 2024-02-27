@@ -1,10 +1,15 @@
-#!/bin/bash
+#!/bin/sh
+unsetopt EQUALS 2>/dev/null
 
 RECIPE_DIR="$(dirname "$0")"
 export SRC_DIR="$(cd `dirname ${RECIPE_DIR}`; pwd)"
 export RECIPE_DIR="${SRC_DIR}/$(basename "${RECIPE_DIR}")"
 
 cd ${SRC_DIR}
+
+eval "$(micromamba shell hook --shell=bash)"
+micromamba shell init --shell=bash --prefix=~/micromamba
+source activate ncl_build 2>/dev/null || micromamba activate ncl_build
 
 export PREFIX="${CONDA_PREFIX}"
 export CXXFLAGS="-fPIC $CXXFLAGS"

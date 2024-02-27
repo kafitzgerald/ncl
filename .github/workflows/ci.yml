@@ -57,11 +57,11 @@ jobs:
 
       - name: Build NCL
         run: |
-          bash .build/conda_build.sh
+          bash .build/mamba_build.sh
 
       - name: Run tests
         run: |
-          micromamba activate ncl_build
+          ncl -V
           test "`ncl -V`" = "`cat version`"
           git clone https://github.com/NCAR/ncl_ci_test
           cd ncl_ci_test
