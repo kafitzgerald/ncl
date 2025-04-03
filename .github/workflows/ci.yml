@@ -38,7 +38,7 @@ jobs:
           sudo apt-get install byacc
 
       - name: Install dependencies (Darwin)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-13'
         run: |
           brew update
           brew install --cask xquartz
