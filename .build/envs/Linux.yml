@@ -29,8 +29,8 @@ dependencies:
   - udunits2
   - zlib
   - flex
+  - xorg-libx11
   - xorg-libxaw
   - xorg-libxmu
   - xorg-makedepend
   - xorg-imake
-  - xorg-x11-proto-devel
