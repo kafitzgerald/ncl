@@ -1,5 +1,6 @@
-#!/bin/sh
-unsetopt EQUALS 2>/dev/null
+#!/bin/bash
+set -e  # Exit on error
+unsetopt EQUALS 2>/dev/null || true
 
 RECIPE_DIR="$(dirname "$0")"
 export SRC_DIR="$(cd `dirname ${RECIPE_DIR}`; pwd)"
@@ -66,7 +67,17 @@ sed -e "s|\${PREFIX}|${PREFIX}|g" -e "s|\${x11_inc}|${x11_inc}|g" -e "s|\${x11_l
 patch -N -p1 < ${RECIPE_DIR}/grib2.patch >/dev/null 2>&1
 
 echo -e "n\n" | ./Configure
-make Everything
+make Everything || { echo "Build failed"; exit 1; }
+
+# Verify NCL was installed
+if [ -x "${PREFIX}/bin/ncl" ]; then
+    echo "NCL successfully installed to ${PREFIX}/bin/ncl"
+    ${PREFIX}/bin/ncl -V
+else
+    echo "ERROR: NCL binary not found at ${PREFIX}/bin/ncl"
+    ls -la "${PREFIX}/bin/" || echo "Bin directory doesn't exist"
+    exit 1
+fi
 
 ACTIVATE_DIR="$PREFIX/etc/conda/activate.d"
 DEACTIVATE_DIR="$PREFIX/etc/conda/deactivate.d"
@@ -77,4 +88,4 @@ mkdir -p "$DEACTIVATE_DIR"
 cp "$RECIPE_DIR/scripts/activate.sh" "$ACTIVATE_DIR/ncl-activate.sh"
 cp "$RECIPE_DIR/scripts/deactivate.sh" "$DEACTIVATE_DIR/ncl-deactivate.sh"
 
-conda list
+micromamba list
