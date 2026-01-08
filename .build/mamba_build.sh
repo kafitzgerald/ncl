@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e  # Exit on error
-set +o equals 2>/dev/null || true  # Disable equals expansion for filenames
 
 RECIPE_DIR="$(dirname "$0")"
 export SRC_DIR="$(cd `dirname ${RECIPE_DIR}`; pwd)"
@@ -74,8 +73,9 @@ if [ -x "${PREFIX}/bin/ncl" ]; then
     echo "NCL successfully installed to ${PREFIX}/bin/ncl"
     ${PREFIX}/bin/ncl -V
 else
-    echo "ERROR: NCL binary not found at ${PREFIX}/bin/ncl"
-    ls -la "${PREFIX}/bin/" || echo "Bin directory doesn't exist"
+    echo "ERROR: NCL binary not found at ${PREFIX}/bin/ncl - build may have failed"
+    echo "Checking if bin directory exists:"
+    ls -la "${PREFIX}/bin/" || echo "ERROR: Bin directory ${PREFIX}/bin/ doesn't exist"
     exit 1
 fi
 
