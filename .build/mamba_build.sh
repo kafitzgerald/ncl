@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e  # Exit on error
-unsetopt EQUALS 2>/dev/null || true
+set +o equals 2>/dev/null || true  # Disable equals expansion if supported
 
 RECIPE_DIR="$(dirname "$0")"
 export SRC_DIR="$(cd `dirname ${RECIPE_DIR}`; pwd)"
