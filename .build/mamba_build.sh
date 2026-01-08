@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e  # Exit on error
-set +o equals 2>/dev/null || true  # Disable equals expansion if supported
+set +o equals 2>/dev/null || true  # Disable equals expansion for filenames
 
 RECIPE_DIR="$(dirname "$0")"
 export SRC_DIR="$(cd `dirname ${RECIPE_DIR}`; pwd)"
@@ -67,7 +67,7 @@ sed -e "s|\${PREFIX}|${PREFIX}|g" -e "s|\${x11_inc}|${x11_inc}|g" -e "s|\${x11_l
 patch -N -p1 < ${RECIPE_DIR}/grib2.patch >/dev/null 2>&1
 
 echo -e "n\n" | ./Configure
-make Everything || { echo "Build failed"; exit 1; }
+make Everything
 
 # Verify NCL was installed
 if [ -x "${PREFIX}/bin/ncl" ]; then
