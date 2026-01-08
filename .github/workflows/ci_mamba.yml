@@ -61,10 +61,6 @@ jobs:
 
       - name: Run tests
         run: |
-          echo "CONDA_PREFIX: $CONDA_PREFIX"
-          echo "PATH: $PATH"
-          which ncl || echo "ncl not in PATH"
-          ls -la "$CONDA_PREFIX/bin/ncl" || echo "ncl not in CONDA_PREFIX/bin"
           ncl -V
           test "`ncl -V`" = "`cat version`"
           git clone https://github.com/NCAR/ncl_ci_test
